@@ -187,7 +187,13 @@ metrics = Metrics((testX, testY), model)
 
 # compile model
 print('Compiling model...')
-opt = Adam(lr=LR, decay=LR / EPOCHS)
+
+lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
+    initial_learning_rate=0.01,
+    decay_steps=10000,
+    decay_rate=LR / EPOCHS)
+opt = tf.keras.optimizers.Adam(learning_rate=lr_schedule)
+
 loss = (
     tf.keras.losses.CategoricalCrossentropy() if not LOG_SOFTMAX else (
         lambda labels, targets: tf.reduce_mean(
